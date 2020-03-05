@@ -55,7 +55,11 @@ class Client
 
 
         $OS = substr($_SERVER['HTTP_USER_AGENT'], -2);
-        if (strpos($_SERVER['HTTP_USER_AGENT'], "Puffin") !== false && ($OS == "WD" || $OS == "LD" || $OS == "MD")) {
+
+        // Check whether request is made using Puffin browser.
+        $isPuffin = !empty(strpos($_SERVER['HTTP_USER_AGENT'], "Puffin"));
+
+        if ($isPuffin && ($OS == "WD" || $OS == "LD" || $OS == "MD")) {
             View::renderTemplate('Client/vpn.html', ['type' => 'puffin']);
             exit;
         }
