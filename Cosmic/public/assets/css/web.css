@@ -2564,8 +2564,13 @@ input:-webkit-autofill {
     text-align: center;
 }
 
+/* Prevent child div (background-image) from overlapping and disturb rounded corners */
+.profile-section {
+    overflow: hidden;
+}
+
 .page-container[data-page="home"] .page-content article.default-section.profile-section .background-image {
-    background: url(../images/web/pages/home/header.gif) bottom;
+    background: url('../images/web/pages/home/header.gif') bottom;
 }
 
 .page-container[data-page="home"] .page-content article.default-section.profile-section .header-image {
