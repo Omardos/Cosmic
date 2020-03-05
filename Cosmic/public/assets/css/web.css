@@ -2063,6 +2063,18 @@ input:-webkit-autofill {
     display: none;
 }
 
+/* Make mobile menu content only visible on md screens */
+@media only screen and (max-width:1100px) {
+    .mobile-navigation-container .navigation-menu {
+        display: block !important
+    }
+}
+
+/* Make mobile menu content hidden by default */
+.mobile-navigation-container .navigation-menu {
+    display: none;
+}
+
 .mobile-navigation-container .navigation-menu,
 .mobile-navigation-container .navigation-menu .navigation-item.has-items .navigation-submenu {
     width: 100%;
@@ -2070,6 +2082,7 @@ input:-webkit-autofill {
     margin: 0;
     padding: 0;
 }
+
 
 .mobile-navigation-container .navigation-menu .navigation-item {
     display: block;
