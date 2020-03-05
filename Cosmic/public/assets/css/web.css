@@ -1877,6 +1877,8 @@ input:-webkit-autofill {
     background-color: #fff;
     z-index: 2;
     width: 100%;
+    position: sticky;
+    top: 0;
 }
 
 .navigation-container .navigation-menu {
