@@ -43,14 +43,11 @@ class Client
             // Get banned ASN models
             $asn = Ban::getNetworkBanByAsn($this->record->autonomousSystemNumber);
 
-            // If the ASN record has not been disallowed, return
-            if (!$asn) {
-                return;
+            // Render vpn view if ASN has been disallowed
+            if ($asn) {
+                View::renderTemplate('Client/vpn.html', ['asn' => $asn->asn, 'type' => 'vpn']);
+                exit;
             }
-
-            // Else render the vpn view
-            View::renderTemplate('Client/vpn.html', ['asn' => $asn->asn, 'type' => 'vpn']);
-            exit;
         }
 
 
