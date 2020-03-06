@@ -1,15 +1,14 @@
 var Web;
 
-function WebInterface()
-{
+function WebInterface() {
     /*
-    * Main elements
-    * */
+     * Main elements
+     * */
     this.web_document = null;
 
     /*
-    * Managers
-    * */
+     * Managers
+     * */
     this.pages_manager = null;
     this.ajax_manager = null;
     this.notifications_manager = null;
@@ -17,10 +16,9 @@ function WebInterface()
     this.customforms_manager = null;
 
     /*
-    * Main initiation
-    * */
-    this.init = function ()
-    {
+     * Main initiation
+     * */
+    this.init = function () {
         // Assign main elements
         this.web_document = $("body");
 
@@ -45,19 +43,16 @@ function WebInterface()
     };
 
     /*
-    * Forms
-    * */
-    this.forms_handler = function ()
-    {
+     * Forms
+     * */
+    this.forms_handler = function () {
         var self = this;
-        this.web_document.on("submit", "form:not(.default-prevent)", function (event)
-        {
+        this.web_document.on("submit", "form:not(.default-prevent)", function (event) {
             event.preventDefault();
 
             if ($(this).attr("method") !== "get")
                 self.ajax_manager.post('/' + $(this).attr("action"), new FormData(this), null, $(this));
-            else
-            {
+            else {
                 var href = $(this).attr("action").replace(Site.url + "/", "").replace(Site.url, "");
                 self.pages_manager.load(href + "?" + $(this).serialize());
             }
@@ -65,26 +60,22 @@ function WebInterface()
     };
 
     /*
-    * Links
-    * */
-    this.links_handler = function ()
-    {
+     * Links
+     * */
+    this.links_handler = function () {
         var self = this;
-        this.web_document.on("click", "a", function (event)
-        {
+        this.web_document.on("click", "a", function (event) {
             if ($(this).attr("href") === "#" || $(this).hasClass("disabled"))
                 event.preventDefault();
 
-        }).on("mouseover", "a:not([target])", function (){
+        }).on("mouseover", "a:not([target])", function () {
             if ($(this).attr("href"))
                 if (!$(this).attr("href") && !$(this).attr("href").match(/^#/))
                     $(this).attr("target", "_blank");
 
-        }).on("click", "a:not([target])", function(event)
-        {
+        }).on("click", "a:not([target])", function (event) {
             event.preventDefault();
-            if ($(this).attr("href") !== "#" && $(this).attr("href") !== "javascript:;" && $(this).attr("href") !== "javascript:void(0)" && $(this).attr("href") !== undefined)
-            {
+            if ($(this).attr("href") !== "#" && $(this).attr("href") !== "javascript:;" && $(this).attr("href") !== "javascript:void(0)" && $(this).attr("href") !== undefined) {
                 var href = $(this).attr("href");
                 if (!href)
                     href = "home";
@@ -94,54 +85,49 @@ function WebInterface()
                     self.pages_manager.load(href);
             }
 
-        }).on("click", ".login-dialog-button", function()
-        {
+        }).on("click", ".login-dialog-button", function () {
             $.magnificPopup.open({
                 items: {
                     type: "inline",
                     src: "#login-dialog"
                 },
                 callbacks: {
-                    open: function() {
-                      $(".rounded-input").keypress(function(e){
-                          if (e.which == 13){
-                              $.magnificPopup.close();
-                              $("#login-request").unbind().click();
-                          }
-                      });
+                    open: function () {
+                        $(".rounded-input").keypress(function (e) {
+                            if (e.which == 13) {
+                                $.magnificPopup.close();
+                                $("#login-request").unbind().click();
+                            }
+                        });
                     }
                 },
                 mainClass: "my-mfp-zoom-in"
             });
-        }).on("click", "#login-request", function(event) 
-        {
+        }).on("click", "#login-request", function (event) {
             event.preventDefault();
-          
+
             var verification_data = {
                 username: $(".login-form [name=username]").val(),
                 password: $(".login-form [name=password]").val(),
                 remember_me: $(".login-form [name=remember_me]").is(':checked')
             };
-            
+
             $.magnificPopup.close();
 
-            Web.ajax_manager.post("/home/login/request", verification_data, function(result) {
+            Web.ajax_manager.post("/home/login/request", verification_data, function (result) {
 
-                if(result.status == "pincode_required")
-                {
-                    setTimeout(function(){ 
-                    Web.dialog_manager.create("confirm", Locale.web_fill_pincode, Locale.web_twostep, null, "pincode", function (result)
-                    {
-                        verification_data.pincode = result.toString();
-                        Web.ajax_manager.post("/home/login/request", verification_data);
+                if (result.status == "pincode_required") {
+                    setTimeout(function () {
+                        Web.dialog_manager.create("confirm", Locale.web_fill_pincode, Locale.web_twostep, null, "pincode", function (result) {
+                            verification_data.pincode = result.toString();
+                            Web.ajax_manager.post("/home/login/request", verification_data);
 
-                        $.magnificPopup.close();
-                    });
+                            $.magnificPopup.close();
+                        });
                     }, 500);
                 }
             });
-        }).on("click", ".about-dialog-button", function()
-        {
+        }).on("click", ".about-dialog-button", function () {
             $.magnificPopup.open({
                 items: {
                     type: "inline",
@@ -150,14 +136,11 @@ function WebInterface()
                 removalDelay: 300,
                 mainClass: "my-mfp-zoom-in"
             });
-        }).on("click", "[data-close-popup = 'true']", function()
-        {
+        }).on("click", "[data-close-popup = 'true']", function () {
             $.magnificPopup.close();
 
-        }).on("click", ".fa-flag", function()
-        {
-            if(User.is_logged)
-            {
+        }).on("click", ".fa-flag", function () {
+            if (User.is_logged) {
                 var action = $(this).attr("data-report");
 
                 $.magnificPopup.open({
@@ -174,14 +157,13 @@ function WebInterface()
             } else {
                 Web.notifications_manager.create("error", Locale.web_login, Locale.web_loggedout);
             }
-        }).on("click", ".fa-times-circle", function()
-        {
-            if(User.is_logged)
-            {
+        }).on("click", ".fa-times-circle", function () {
+            if (User.is_logged) {
                 var id = $(this).attr("data-id");
-                self.ajax_manager.post("/ajax/report/photo", {itemId: id}, function (result)
-                {
-                    if(result.status == "success") {
+                self.ajax_manager.post("/ajax/report/photo", {
+                    itemId: id
+                }, function (result) {
+                    if (result.status == "success") {
                         $(".photos[data-id=" + id + "]").empty();
                         $.magnificPopup.close();
                     }
@@ -191,39 +173,33 @@ function WebInterface()
     };
 
     /*
-    * Responsive
-    * */
-    this.init_responsive = function ()
-    {
+     * Responsive
+     * */
+    this.init_responsive = function () {
         var self = this;
 
         // Menu
         this.web_document.find(".navigation-container").after('<nav class="mobile-navigation-container"><ul class="navigation-menu"></ul></nav>');
 
-        this.web_document.find(".navigation-container .navigation-menu .navigation-item:not(.main-link-item):not(.navigation-right-side-item)").each(function ()
-        {
+        this.web_document.find(".navigation-container .navigation-menu .navigation-item:not(.main-link-item):not(.navigation-right-side-item)").each(function () {
             var mobile_item = $(this).clone().appendTo(".mobile-navigation-container .navigation-menu");
             mobile_item.removeClass("selected").removeAttr("data-category");
             if (mobile_item.hasClass("has-items"))
                 mobile_item.children("a").attr("href", "#");
         });
 
-        $('<li class="navigation-item mobile-menu cant-select">Menu</li>').prependTo(".navigation-container .navigation-menu").click(function ()
-        {
+        $('<li class="navigation-item mobile-menu cant-select">Menu</li>').prependTo(".navigation-container .navigation-menu").click(function () {
             self.web_document.find(".mobile-navigation-container").finish().slideToggle();
             self.web_document.find(".mobile-navigation-container .navigation-item.has-items .navigation-submenu").finish().slideUp();
         });
 
-        this.web_document.find(".mobile-navigation-container .navigation-item.has-items>a").click(function ()
-        {
+        this.web_document.find(".mobile-navigation-container .navigation-item.has-items>a").click(function () {
             self.web_document.find(".mobile-navigation-container .navigation-item.has-items").not($(this).parent()).find(".navigation-submenu").finish().slideUp();
             $(this).parent().find(".navigation-submenu").finish().slideToggle();
         });
 
-        this.web_document.find(".mobile-navigation-container a").click(function ()
-        {
-            if ($(this).attr("href") !== "#")
-            {
+        this.web_document.find(".mobile-navigation-container a").click(function () {
+            if ($(this).attr("href") !== "#") {
                 self.web_document.find(".mobile-navigation-container .navigation-item.has-items .navigation-submenu").finish().slideUp();
                 self.web_document.find(".mobile-navigation-container").finish().slideUp();
             }
@@ -231,40 +207,36 @@ function WebInterface()
     };
 
     /*
-    * Cookies
-    * */
-    this.check_cookies = function ()
-    {
-        if (Cookies.get("allow_cookies") === undefined)
-        {
+     * Cookies
+     * */
+    this.check_cookies = function () {
+        if (Cookies.get("allow_cookies") === undefined) {
             this.web_document.find(".cookies-accept-container").show();
-            this.web_document.find(".cookies-accept-container .close-container").click(function ()
-            {
-                Cookies.set("allow_cookies", true, { expires: 365 });
+            this.web_document.find(".cookies-accept-container .close-container").click(function () {
+                Cookies.set("allow_cookies", true, {
+                    expires: 365
+                });
                 $(this).parent().hide();
             });
         }
     }
 }
 
-$(function ()
-{
+$(function () {
     Web = new WebInterface();
     Web.init();
 });
 
-function WebPagesManagerInterface()
-{
+function WebPagesManagerInterface() {
     this.current_page_url = null;
     this.current_page_interface = null;
     this.last_page_url = "home";
     this.page_container = null;
 
     /*
-    * Manager initialization
-    * */
-    this.init = function ()
-    {
+     * Manager initialization
+     * */
+    this.init = function () {
         var self = this;
 
         this.page_container = $(".page-container");
@@ -280,14 +252,12 @@ function WebPagesManagerInterface()
         if (this.current_page_url.match(/^hotel/) && User.is_logged) {
             Web.hotel_manager.open_hotel(this.current_page_url);
         }
-      
-        History.Adapter.bind(window, "statechange", function ()
-        {
+
+        History.Adapter.bind(window, "statechange", function () {
             var state = History.getState();
             var url = state.url.replace(document.location.origin, "").substring(1);
 
-            if (self.current_page_url !== url)
-            {
+            if (self.current_page_url !== url) {
                 if (url === "/") {
                     self.load("home", null, false, null, false);
                 } else {
@@ -299,10 +269,9 @@ function WebPagesManagerInterface()
     };
 
     /*
-    * History push
-    * */
-    this.push = function (url, title, history_replace)
-    {
+     * History push
+     * */
+    this.push = function (url, title, history_replace) {
         url = url.replace(/^\/|\/$/g, "");
         this.current_page_url = url;
 
@@ -314,11 +283,10 @@ function WebPagesManagerInterface()
     };
 
     /*
-    * Load page
-    * */
-    this.load = function (url, data, scroll, callback, history_push, history_replace)
-    {
-      
+     * Load page
+     * */
+    this.load = function (url, data, scroll, callback, history_push, history_replace) {
+
         if (scroll === undefined) {
             scroll = true
         }
@@ -330,21 +298,20 @@ function WebPagesManagerInterface()
         if (history_replace === undefined) {
             history_replace = false
         }
-        
+
         var self = this;
         var body = $("body");
 
         if (url === "")
             url = "home";
-      
-        if(url.charAt(0)  !== "/") {
+
+        if (url.charAt(0) !== "/") {
             url = "/" + url;
         }
-    
+
         this.last_page_url = this.current_page_url;
 
-        if (!url.match(/^\/hotel/))
-        {
+        if (!url.match(/^\/hotel/)) {
             PageLoading.show();
 
             $.ajax({
@@ -355,13 +322,11 @@ function WebPagesManagerInterface()
                     PageLoading.hide();
                     Web.notifications_manager.create("error", error, request.responseText);
                 }
-            }).done(function (result)
-            {
+            }).done(function (result) {
                 PageLoading.hide();
 
                 // Change full page
-                if (result.location)
-                {
+                if (result.location) {
                     window.location = result.location;
                     return null;
                 }
@@ -369,14 +334,14 @@ function WebPagesManagerInterface()
                 // Create notification
                 if (!isEmpty(result.status) && !isEmpty(result.message))
                     Web.notifications_manager.create(result.status, result.message, (result.title ? result.title : null), (Number.isInteger(result.timer) ? result.timer : undefined), (result.link ? result.link : null));
-            
-              
+
+
                 // Create dialog
                 if (result.dialog) {
                     Web.dialog_manager.create("default", result.dialog, result.title, null, null);
                     return;
                 }
-                
+
 
                 // Change page
                 else if (result.loadpage)
@@ -387,8 +352,7 @@ function WebPagesManagerInterface()
                     self.load(result.replacepage, null, true, null, true, true);
 
                 // Build new page
-                else
-                {
+                else {
                     self.current_page_interface = new WebPageInterface(self, result.id, scroll, result);
                     self.current_page_interface.build();
 
@@ -407,24 +371,21 @@ function WebPagesManagerInterface()
                 document.title = result.title;
                 self.push(url, result.title, false);
             });
-        }
-        else if (User.is_logged)
-        { 
+        } else if (User.is_logged) {
             Web.hotel_manager.open_hotel(url.replace("hotel?", "").replace("hotel", ""));
             self.push(url, "Hotel - " + Site.name, false);
         }
     };
 }
 
-function WebPageInterface(manager, type, scroll, page_data)
-{
+function WebPageInterface(manager, type, scroll, page_data) {
     if (scroll === undefined) {
         scroll = true;
     }
 
     /*
-    * Page configuration
-    * */
+     * Page configuration
+     * */
     this.manager = manager;
     this.type = type;
     this.scroll = scroll;
@@ -432,10 +393,9 @@ function WebPageInterface(manager, type, scroll, page_data)
     this.page_interface = null;
 
     /*
-    * Build page
-    * */
-    this.build = function ()
-    {
+     * Build page
+     * */
+    this.build = function () {
         if (this.page_data === null)
             return;
 
@@ -449,16 +409,17 @@ function WebPageInterface(manager, type, scroll, page_data)
 
         // Set category
         var category = this.type.substr(0, this.type.lastIndexOf("_"));
-        if(isEmpty(category))
+        if (isEmpty(category))
             category = this.type;
 
         navigation_container.find(".navigation-item.selected:not([data-category='" + category + "'])").removeClass("selected");
         navigation_container.find(".navigation-item[data-category='" + category + "']").addClass("selected");
-      
-        if(this.manager.current_page_url.indexOf("forum") >= 0){
-        } else {
-            if(this.scroll)
-                $("html, body").animate({scrollTop: navigation_container.offset().top}, 300);
+
+        if (this.manager.current_page_url.indexOf("forum") >= 0) {} else {
+            if (this.scroll)
+                $("html, body").animate({
+                    scrollTop: navigation_container.offset().top
+                }, 300);
         }
 
         // Custom page interface
@@ -466,10 +427,9 @@ function WebPageInterface(manager, type, scroll, page_data)
     };
 
     /*
-    * Custom interface
-    * */
-    this.assign_interface = function ()
-    {
+     * Custom interface
+     * */
+    this.assign_interface = function () {
         if (this.type === "home")
             this.page_interface = new WebPageHomeInterface(this);
         else if (this.type === "registration")
@@ -482,7 +442,7 @@ function WebPageInterface(manager, type, scroll, page_data)
             this.page_interface = new WebPageShopOffersInterface(this);
         else if (this.type === "help_requests")
             this.page_interface = new WebPageHelpRequestsInterface(this);
-	    else if (this.type === "help_new")
+        else if (this.type === "help_new")
             this.page_interface = new WebPageHelpRequestsInterface(this);
         else if (this.type === "profile")
             this.page_interface = new WebPageProfileInterface(this);
@@ -496,7 +456,7 @@ function WebPageInterface(manager, type, scroll, page_data)
             this.page_interface = new WebPageSettingsInterface(this);
         else if (this.type === "settings_namechange")
             this.page_interface = new WebPageSettingsNamechangeInterface(this);
-         else if (this.type === "settings_verification")
+        else if (this.type === "settings_verification")
             this.page_interface = new WebPageSettingsVerificationInterface(this);
         else if (this.type === "password_claim")
             this.page_interface = new WebPagePasswordClaimInterface(this);
@@ -508,25 +468,23 @@ function WebPageInterface(manager, type, scroll, page_data)
     };
 
     /*
-    * Get page container
-    * */
-    this.get_page_container = function ()
-    {
+     * Get page container
+     * */
+    this.get_page_container = function () {
         return this.manager.page_container;
     };
 
     /*
-    * Events
-    * */
-    this.update = function ()
-    {};
+     * Events
+     * */
+    this.update = function () {};
 }
 
 function WebAjaxManagerInterface() {
-  
-    this.get =  function(url, callback) {
+
+    this.get = function (url, callback) {
         PageLoading.show();
-      
+
         // Requests
         $.ajax({
             type: "get",
@@ -540,15 +498,15 @@ function WebAjaxManagerInterface() {
             }
         }).done(function (result) {
             PageLoading.hide();
-          
+
             if (typeof callback === "function")
                 callback(result);
         });
     }
-  
+
     /*
-    * Post method
-    * */
+     * Post method
+     * */
     this.post = function (url, data, callback, form) {
         // Prepare data
         if (!(data instanceof FormData)) {
@@ -572,8 +530,8 @@ function WebAjaxManagerInterface() {
         }
 
         PageLoading.show();
-      
-        if(url.charAt(0)  !== "/") {
+
+        if (url.charAt(0) !== "/") {
             url = "/" + url;
         }
 
@@ -641,8 +599,7 @@ function WebAjaxManagerInterface() {
     };
 }
 
-function WebNotificationsManagerInterface()
-{
+function WebNotificationsManagerInterface() {
     this.titles_configutation = {
         success: Locale.web_notifications_success,
         error: Locale.web_notifications_error,
@@ -650,8 +607,7 @@ function WebNotificationsManagerInterface()
     };
     this.notifications = {};
 
-    this.create = function (type, message, title, timer, link)
-    {
+    this.create = function (type, message, title, timer, link) {
         var notification_id = (new Date().getTime() + Math.floor((Math.random() * 10000) + 1)).toString(16);
 
         if (timer === undefined)
@@ -661,8 +617,7 @@ function WebNotificationsManagerInterface()
         this.notifications[notification_id].init();
     };
 
-    this.destroy = function (id)
-    {
+    this.destroy = function (id) {
         if (!this.notifications.hasOwnProperty(id))
             return null;
 
@@ -671,8 +626,7 @@ function WebNotificationsManagerInterface()
     };
 }
 
-function WebNotificationInterface(manager, id, type, message, title, timer, link)
-{
+function WebNotificationInterface(manager, id, type, message, title, timer, link) {
     this.manager = manager;
     this.id = id;
     this.type = type;
@@ -684,8 +638,7 @@ function WebNotificationInterface(manager, id, type, message, title, timer, link
     this.timeout = null;
 
 
-    this.init = function ()
-    {
+    this.init = function () {
         var self = this;
         var template = [
             '<div class="notification-container" data-id="' + this.id + '" data-type="' + this.type + '">\n' +
@@ -697,15 +650,12 @@ function WebNotificationInterface(manager, id, type, message, title, timer, link
 
         this.notification = $(template).appendTo(".notifications-container");
 
-        this.notification.find(".notification-close").click(function ()
-        {
+        this.notification.find(".notification-close").click(function () {
             self.close();
         });
 
-        if (this.link !== null)
-        {
-            this.notification.click(function ()
-            {
+        if (this.link != null) {
+            this.notification.click(function () {
                 if ($(this).hasClass("notification-close"))
                     return null;
 
@@ -717,15 +667,11 @@ function WebNotificationInterface(manager, id, type, message, title, timer, link
             });
         }
 
-        if (this.timer !== 0)
-        {
-            this.notification.hover(function ()
-            {
+        if (this.timer !== 0) {
+            this.notification.hover(function () {
                 clearTimeout(self.timeout);
-            }, function ()
-            {
-                self.timeout = setTimeout(function()
-                {
+            }, function () {
+                self.timeout = setTimeout(function () {
                     self.close();
                 }, self.timer * 1000);
             });
@@ -734,37 +680,32 @@ function WebNotificationInterface(manager, id, type, message, title, timer, link
         this.show();
     };
 
-    this.show = function ()
-    {
+    this.show = function () {
         var self = this;
 
         if (this.timer === 0)
             this.notification.fadeIn();
-        else
-        {
+        else {
             this.notification.fadeIn();
-            this.timeout = setTimeout(function()
-            {
+            this.timeout = setTimeout(function () {
                 self.close();
             }, this.timer * 1000);
         }
     };
 
-    this.close = function ()
-    {
+    this.close = function () {
         var self = this;
-        this.notification.animate({"opacity": 0}, 300, function ()
-        {
-            $(this).slideUp(400, function ()
-            {
+        this.notification.animate({
+            "opacity": 0
+        }, 300, function () {
+            $(this).slideUp(400, function () {
                 self.manager.destroy(self.id);
             });
         });
     };
 }
 
-function WebDialogManagerInterface()
-{
+function WebDialogManagerInterface() {
     this.buttons = null;
     this.input = null;
     this.type = null;
@@ -772,8 +713,7 @@ function WebDialogManagerInterface()
     this.content = null;
     this.callback = null;
 
-    this.create = function (type, content, title, buttons, input, callback)
-    {
+    this.create = function (type, content, title, buttons, input, callback) {
         // Reset default
         this.buttons = {
             cancel: Locale.web_dialog_cancel,
@@ -784,23 +724,22 @@ function WebDialogManagerInterface()
         this.content = null;
         this.input = null;
         this.callback = null;
-      
+
         // Assign new values
         this.type = type;
         this.title = title === undefined ? Locale.web_dialog_confirm : title;
         this.content = content;
         this.callback = callback;
         this.input = input;
-      
+
         if (buttons !== undefined)
             this.assign_buttons(buttons);
-      
+
         this.build();
     };
 
-    this.build = function ()
-    { 
-      
+    this.build = function () {
+
         var self = this;
 
         var template = [
@@ -813,13 +752,13 @@ function WebDialogManagerInterface()
         ].join("");
 
         var dialog = $(template);
-        
+
         dialog.find(".buttons-container").append('<button class="rounded-button ' + (this.type === "confirm" ? 'red' : 'lightblue') + ' cancel">' + this.buttons.cancel + '</button>');
 
-        if(this.input !== null) {
+        if (this.input !== null) {
             dialog.find(".input-container").append('<br /><input type="text" class="' + this.input + ' rounded-input purple-active dialog-input">');
         }
-    
+
         if (this.type === "confirm")
             dialog.find(".buttons-container").append('<button class="rounded-button red plain confirm">' + this.buttons.confirm + '</button>');
 
@@ -830,16 +769,14 @@ function WebDialogManagerInterface()
                 type: "inline"
             },
             callbacks: {
-                open: function ()
-                {
+                open: function () {
                     var content = $(this.content);
 
-                    content.unbind().on("click", ".confirm", function ()
-                    {
-                      
-                        var result = $('.dialog-input').map(function() {
+                    content.unbind().on("click", ".confirm", function () {
+
+                        var result = $('.dialog-input').map(function () {
                             return $(this).val();
-                        }).toArray();      
+                        }).toArray();
 
                         $.magnificPopup.close();
                         $(document).off("keydown", keydownHandler);
@@ -847,22 +784,17 @@ function WebDialogManagerInterface()
                         if (typeof self.callback === "function")
                             self.callback(result)
 
-                    }).on("click", ".cancel", function ()
-                    {
+                    }).on("click", ".cancel", function () {
                         $.magnificPopup.close();
                         $(document).off("keydown", keydownHandler);
 
                     });
 
-                    var keydownHandler = function (event)
-                    {
-                        if (event.keyCode === 13)
-                        {
+                    var keydownHandler = function (event) {
+                        if (event.keyCode === 13) {
                             content.find(".confirm").click();
                             return false;
-                        }
-                        else if (event.keyCode === 27)
-                        {
+                        } else if (event.keyCode === 27) {
                             content.find(".cancel").click();
                             return false;
                         }
@@ -874,10 +806,8 @@ function WebDialogManagerInterface()
         });
     };
 
-    this.assign_buttons = function (buttons)
-    {
-        for (var name in buttons)
-        {
+    this.assign_buttons = function (buttons) {
+        for (var name in buttons) {
             if (buttons.hasOwnProperty(name))
                 this.buttons[name] = buttons[name];
         }
