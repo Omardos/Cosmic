@@ -1910,6 +1910,7 @@ input:-webkit-autofill {
     display: block;
     padding-top: 20px;
     border-bottom: 3px solid transparent;
+    white-space: nowrap;
 }
 
 .navigation-container .navigation-menu .navigation-item:hover>a {
@@ -2017,6 +2018,10 @@ input:-webkit-autofill {
     text-transform: none;
     padding: 20px 40px 0 15px;
     border-left: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.navigation-container .navigation-menu .navigation-item.navigation-right-side-item>span {
+    overflow: hidden;
 }
 
 .navigation-container .navigation-menu .navigation-item.navigation-right-side-item>a .account-avatar {
