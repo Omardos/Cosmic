@@ -362,7 +362,7 @@ class Remote
         foreach($currencys as $currency) {
             if($currency) {
                 $currency->oldamount = $currency->amount;
-                $currency->amount = (int)(input()->post($currency->currency)->value ? input()->post($currency->currency)->value : (string)$currency->amount);
+                $currency->amount = (int)(input()->post($currency->type)->value ? input()->post($currency->type)->value : (string)$currency->amount);
             }
         }
 
@@ -393,9 +393,10 @@ class Remote
         }
         
         if (Admin::changePlayerSettings($email ?? $player->mail, $motto, $pin_code, $player->id)) {
-
+	debug($currencys);
+	exit;
             if($player->credits != $credits) {
-                HotelApi::execute('givecredits', ['user_id' => $player->id, 'credits' => - $player->credits + $player->credits - $credits]);
+                HotelApi::execute('givecredits', ['user_id' => $player->id, 'credits' => - $player->credits + $credits]);
             }
 
             if($player->rank != $rank) {
@@ -405,7 +406,7 @@ class Remote
             foreach($currencys as $currency) {
                 if($currency) {
                     if ($currency->oldamount != $currency->amount) {
-                        HotelApi::execute('givepoints', ['user_id' => $player->id, 'points' => - $currency->oldamount - $currency->oldamount + $currency->amount, 'type' => $currency->type]);
+                        HotelApi::execute('givepoints', ['user_id' => $player->id, 'points' => - $currency->oldamount + $currency->amount, 'type' => $currency->type]);
                     } 
                 }
             }

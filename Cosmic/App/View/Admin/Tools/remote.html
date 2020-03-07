@@ -90,13 +90,14 @@
                <div class="form-group row">
                   {% for currency in data.user.currencys %}
                       {% if currency is not empty %}
-                          <div class="col-lg-4">
-                             <label>{{currency.name}}</label>
-                             <input type="number" class="form-control" value="{{currency.amount}}" name="{{currency.currency}}" {{disabled}}>
-                          </div>
-                      {% endif %}
-                  {% endfor %}
-               </div>
+					<label for="example-text-input" class="col-3 col-form-label">{{currency.currency}}</label>
+					<div class="col-lg-9">
+						<input type="number" class="form-control" value="{{currency.amount}}" name="{{currency.type}}" {{disabled}}>
+						<br>
+                    </div>
+						 {% endif %}
+	              {% endfor %}
+	               </div>
             </div>
             {% if 'housekeeping_ranks' in permissions or 'housekeeping_ranks_extra' in permissions or 'housekeeping_change_email' in permissions %}
             <div class="kt-portlet__foot kt-portlet__foot--solid">
