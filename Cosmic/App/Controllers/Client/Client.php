@@ -23,6 +23,7 @@ use stdClass;
 class Client
 {
     private $data;
+    private $record;
 
     public function client()
     {
@@ -31,22 +32,31 @@ class Client
         $reader = new Reader(__DIR__. Config::vpnLocation);
 
         try {
-            $record = $reader->asn(request()->getIp());
+            $this->record = $reader->asn(request()->getIp());
         } catch (AddressNotFoundException $e) {
         } catch (InvalidDatabaseException $e) {
-
         }
 
-        $asn = Ban::getNetworkBanByAsn($record->autonomousSystemNumber);
+        // Check if an ASN model record has been found
+        if ($this->record) {
 
-        if ($asn) {
-            View::renderTemplate('Client/vpn.html', ['asn' => $asn->asn, 'type' => 'vpn']);
-            exit;
+            // Get banned ASN models
+            $asn = Ban::getNetworkBanByAsn($this->record->autonomousSystemNumber);
+
+            // Render vpn view if ASN has been disallowed
+            if ($asn) {
+                View::renderTemplate('Client/vpn.html', ['asn' => $asn->asn, 'type' => 'vpn']);
+                exit;
+            }
         }
-   
+
 
         $OS = substr($_SERVER['HTTP_USER_AGENT'], -2);
-        if (strpos($_SERVER['HTTP_USER_AGENT'], "Puffin") !== false && ($OS == "WD" || $OS == "LD" || $OS == "MD")) {
+
+        // Check whether request is made using Puffin browser.
+        $isPuffin = !empty(strpos($_SERVER['HTTP_USER_AGENT'], "Puffin"));
+
+        if ($isPuffin && ($OS == "WD" || $OS == "LD" || $OS == "MD")) {
             View::renderTemplate('Client/vpn.html', ['type' => 'puffin']);
             exit;
         }
@@ -59,7 +69,7 @@ class Client
 
         Player::update($user->id, ["auth_ticket" => $this->data->auth_ticket, "shuttle_token" => $this->data->shuttle_token]);
       
-        if($user->getMembership()) {
+        if ($user->getMembership()) {
             HotelApi::execute('setrank', ['user_id' => $user->id, 'rank' => $user->getMembership()->old_rank]);
             $user->deleteMembership();
         }
