@@ -393,8 +393,7 @@ class Remote
         }
         
         if (Admin::changePlayerSettings($email ?? $player->mail, $motto, $pin_code, $player->id)) {
-	debug($currencys);
-	exit;
+
             if($player->credits != $credits) {
                 HotelApi::execute('givecredits', ['user_id' => $player->id, 'credits' => - $player->credits + $credits]);
             }
