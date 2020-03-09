@@ -60,12 +60,10 @@ class Offers
         if ($dedipass->status != 'success') {
             response()->json(["status" => "error", "message" => Locale::get('shop/offers/invalid_code')]);
         }
-      
-        $amount = Player::getCurrencys(request()->player->id)[$offer->currency_type]->amount;
   
         HotelApi::execute('givepoints', array('user_id' => request()->player->id, 'points' => $offer->amount, 'type' => $offer->currency));
         Log::addPurchaseLog(request()->player->id, $offer->amount . ' '.Locale::get('core/belcredits').' (' . $code . ')', $offer->lang);
-        response()->json(["status" => "success", "message" => Locale::get('shop/offers/success_1').' ' . $offer->amount . ' '.Locale::get('shop/offers/success_2')]);
+        response()->json(["status" => "success", "amount" => $offer->amount]);
     }
 
     public function index($offerid)
