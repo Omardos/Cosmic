@@ -15,10 +15,12 @@ class Home
 {
     public function index()
     { 
-        $forums = Guild::getCategory(request()->player->id);
+        if(isset(request()->player->id)) {
+            $forums = Guild::getCategory(request()->player->id);
         
-        foreach($forums as $forum) {
-            $forum->slug = Core::convertSlug($forum->name);
+            foreach($forums as $forum) {
+                $forum->slug = Core::convertSlug($forum->name);
+            }
         }
       
         $public = Guild::getPublicGuilds();
@@ -37,7 +39,7 @@ class Home
         View::renderTemplate('Community/Guilds/index.html', [
             'title'   => Locale::get('core/title/community/forum'),
             'page'    => 'forum',
-            'forums'  => $forums,
+            'forums'  => $forums ?? null,
             'public'  => $public,
             'latestposts' => $latestPosts
         ]);

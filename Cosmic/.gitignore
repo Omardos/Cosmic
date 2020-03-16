@@ -1,8 +1,4 @@
-public/tmp/*
-public/library/*
-public/uploads/*
 App/Config.php
-.htaccess
 
 # PHPStorm
 .idea

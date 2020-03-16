@@ -72,6 +72,10 @@ class Category {
             exit;
         }
       
+        if(isset(request()->player->id)) {
+            response()->json(["status" => "error", "message" => Locale::get('core/notification/something_wrong')]);
+        }
+      
         $title    = input()->post('title')->value;
         $message  = input()->post('message')->value;
         $cat_id   = input()->post('guild_id')->value;

@@ -37,6 +37,8 @@ class Routes extends Router
             Router::get('/disconnect', 'Home\Lost@index')->setName('index.home');
             Router::get('/games/ranking', 'Games\Ranking@index'); 
             Router::get('/jobs', 'Jobs\Jobs@index');
+          
+            Router::get('/guilds', 'Community\Guilds\Home@index');
      
             Router::get('/profile', 'Home\Proficle@profile');
             Router::get('/profile/{user}', 'Home\Profile@profile', ['defaultParameterRegex' => '[a-zA-Z0-9\d\-_=\?!@:\.,]+']);
@@ -89,7 +91,6 @@ class Routes extends Router
                 Router::get('/help/requests/new', 'Help\Ticket@index');
                 Router::get('/help/requests/{ticket}/view', 'Help\Requests@ticket', ['defaultParameterRegex' => '[0-9]+']);
 
-                Router::get('/guilds', 'Community\Guilds\Home@index');
                 Router::get('/guilds/{slug}', 'Community\Guilds\Category@index', ['defaultParameterRegex' => '[\w\-]+'])->addMiddleware(GuildMiddleware::class);
                 Router::get('/guilds/{slug}/page/{page}', 'Community\Guilds\Category@index', ['defaultParameterRegex' => '[\w\-]+'])->addMiddleware(GuildMiddleware::class);
                 Router::get('/guilds/{group}/thread/{slug}', 'Community\Guilds\Topic@index', ['defaultParameterRegex' => '[\w\-]+'])->addMiddleware(GuildMiddleware::class);

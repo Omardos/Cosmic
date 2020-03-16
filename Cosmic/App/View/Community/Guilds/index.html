@@ -4,6 +4,7 @@
 
 <div class="page-content">
     <div class="left-side">
+        {% if player %}
         <h4>
             My Groups forums
         </h4>
@@ -26,6 +27,7 @@
             </article>
         </a>
         {% endfor %}
+        {% endif %}
 
         <h4>
             Public Groups forums

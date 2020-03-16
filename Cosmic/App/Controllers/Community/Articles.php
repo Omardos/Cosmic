@@ -30,6 +30,10 @@ class Articles
         if(!$validate->isSuccess()) {
             return;
         }
+      
+        if(isset(request()->player->id)) {
+            response()->json(["status" => "error", "message" => Locale::get('core/notification/something_wrong')]);
+        }
 
         $news_id = input()->post('post')->value;
 
@@ -57,6 +61,10 @@ class Articles
             return;
         }
 
+        if(isset(request()->player->id)) {
+            response()->json(["status" => "error", "message" => Locale::get('core/notification/something_wrong')]);
+        }
+      
         $article = Community::getArticleById(input()->post('articleid')->value);
 
         if (empty($article)) {

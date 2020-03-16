@@ -23,6 +23,10 @@ class Photos
 
     public function like()
     {
+        if(isset(request()->player->id)) {
+            response()->json(["status" => "error", "message" => Locale::get('core/notification/something_wrong')]);
+        }
+      
         if (Community::userAlreadylikePhoto(input()->post('post'), request()->player->id)) {
             response()->json(["status" => "error", "message" => Locale::get('core/notification/already_liked')]);
         }

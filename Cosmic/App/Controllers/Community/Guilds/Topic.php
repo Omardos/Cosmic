@@ -76,6 +76,10 @@ class Topic {
             return;
         }
       
+        if(isset(request()->player->id)) {
+            response()->json(["status" => "error", "message" => Locale::get('core/notification/something_wrong')]);
+        }
+      
         $topic_id = input()->post('topic_id')->value;
         $guild_id = input()->post('guild_id')->value;
       
@@ -110,7 +114,7 @@ class Topic {
             return;
         }
       
-        if (request()->player === null) {
+        if(isset(request()->player->id)) {
             response()->json(["status" => "error", "message" => Locale::get('core/notification/something_wrong')]);
         }
       
@@ -144,7 +148,7 @@ class Topic {
             return;
         }
       
-        if (request()->player === null) {
+        if(isset(request()->player->id)) {
             response()->json(["status" => "error", "message" => Locale::get('core/notification/something_wrong')]);
         }
       
