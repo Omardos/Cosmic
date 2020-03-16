@@ -16,6 +16,9 @@
 
 <a href="https://github.com/devraizer/Cosmic/wiki/Installation---Windows,-Morningstar-Arcturus-&-Catalogue---Cosmic">Windows, Morningstar Arcturus & Catalogue Cosmic</a>
 
+<a href="https://vimeo.com/396311594">IIS Video Tutorial - Cosmic Installation, Morningstar Arcturus & Catalogue Cosmic</a>
+
+
 ### Clone
 
 - Clone this repo to your local machine using `https://github.com/devraizer/Cosmic.git`
