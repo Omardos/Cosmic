@@ -14,6 +14,11 @@ class Player
 {
     private static $data = array('id','username','password','real_name','mail','account_created','account_day_of_birth','last_login','online','pincode','last_online','motto','look','gender','rank','credits','pixels','points','auth_ticket','ip_register','ip_current','machine_id', 'secret_key', 'shuttle_token');
 
+    public static function getAllUsers()
+    {
+        return QueryBuilder::table('users')->select('id')->get();
+    }
+  
     public static function getDataById($player_id, $data = null)
     {
         return QueryBuilder::table('users')->select($data ?? static::$data)->setFetchMode(PDO::FETCH_CLASS, get_called_class())->where('id', $player_id)->first();
@@ -63,6 +68,10 @@ class Player
         return QueryBuilder::table('users_currency')->where('user_id', $player_id)->where('type', $type)->update(array('amount' => $value));
     }
 
+    public static function deleteCurrency($player_id, $type){
+        return QueryBuilder::table('users_currency')->where('user_id', $player_id)->where('type', $type)->delete();
+    }
+  
     public static function updateSettings($player_id, $column, $type){
         return QueryBuilder::table('users_settings')->where('user_id', $player_id)->update(array($column => "$type"));
     }

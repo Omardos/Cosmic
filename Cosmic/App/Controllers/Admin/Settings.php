@@ -32,13 +32,25 @@ class Settings
         $type = input()->post('type')->value;
         $amount = input()->post('amount')->value;
       
+        $users = Player::getAllUsers();
+        foreach($users as $row) {
+            Player::createCurrency($row->id, $type);
+        }
+      
         Core::addCurrency($currency, $type, $amount);
         response()->json(["status" => "success", "message" => "Currency has been added!"]);
     }
   
     public function deleteCurrency()
     {
-        if(Core::deleteCurrency(input()->post('type')->value, input()->post('currency')->value)) {
+        $type = input()->post('type')->value;
+      
+        $users = Player::getAllUsers();
+        foreach($users as $row) {
+            Player::deleteCurrency($row->id, $type);
+        }
+      
+        if(Core::deleteCurrency($type, input()->post('currency')->value)) {
             response()->json(["status" => "success", "message" => "Currency has been deleted"]);
         }
     }
