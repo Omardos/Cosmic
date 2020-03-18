@@ -32,7 +32,7 @@ class Settings
         $type = input()->post('type')->value;
         $amount = input()->post('amount')->value;
       
-        $users = Player::getAllUsers();
+        $users = Player::getAllUsers(["id"]);
         foreach($users as $row) {
             Player::createCurrency($row->id, $type);
         }
