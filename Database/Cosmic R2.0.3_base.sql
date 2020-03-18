@@ -624,7 +624,7 @@ CREATE TABLE `website_membership`  (
 -- Alter table fixes for Cosmic to work
 -- ----------------------------
 ALTER TABLE catalog_items ADD rate enum('up','down','none') DEFAULT 'none';
-ALTER TABLE users ADD secret_key int(11) NULL DEFAULT NULL;
+ALTER TABLE users ADD secret_key varchar(40) NULL DEFAULT NULL;
 ALTER TABLE users ADD pincode varchar(11) NULL DEFAULT NULL;
 ALTER TABLE users MODIFY mail VARCHAR(500);
 ALTER TABLE users ADD shuttle_token varchar(200) NULL DEFAULT NULL;
