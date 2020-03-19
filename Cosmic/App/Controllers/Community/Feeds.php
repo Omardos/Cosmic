@@ -66,7 +66,7 @@ class Feeds
 
     public function delete()
     {
-        if(isset(request()->player->id)) {
+        if(!request()->player->id) {
             response()->json(["status" => "error", "message" => Locale::get('core/notification/something_wrong')]);
         }
       
@@ -85,7 +85,7 @@ class Feeds
 
     public function like()
     {
-        if(isset(request->player->id)) {
+         if(!request()->player->id) {
             response()->json(["status" => "error", "message" => Locale::get('core/notification/something_wrong')]);
         }
       

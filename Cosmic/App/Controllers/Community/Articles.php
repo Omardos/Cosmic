@@ -31,7 +31,7 @@ class Articles
             return;
         }
       
-        if(isset(request()->player->id)) {
+        if(!request()->player->id) {
             response()->json(["status" => "error", "message" => Locale::get('core/notification/something_wrong')]);
         }
 
@@ -61,7 +61,7 @@ class Articles
             return;
         }
 
-        if(isset(request()->player->id)) {
+        if(!request()->player->id) {
             response()->json(["status" => "error", "message" => Locale::get('core/notification/something_wrong')]);
         }
       
