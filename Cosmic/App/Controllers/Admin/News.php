@@ -69,14 +69,16 @@ class News
         $full_story = input()->post('full_story')->value;
         $category = input()->post('category')->value;
         $images = input()->post('images')->value;
-        $imagePath = input()->file('imagesUpload')->filename ?? '';
+        $imagePath = input()->file('imagesUpload')->filename;
 
         if (!empty($imagePath)) {
             if ($this->imageUpload()) {
-                $imagePath = Config::site['path'] . '/uploads/' . $this->file->getInfo()->filename;
+                $imagePath = '/uploads/' . $this->file->getInfo()->filename;
             }
+        } else {
+            $imagePath = Admin::getNewsById($id)->header;
         }
-
+      
         if ($id == 0) {
             Admin::addNews($title, $short_story, $full_story, $category, $imagePath, $images, request()->player->id);
             Log::addStaffLog('-1', 'News placed: ' . $title, request()->player->id, 'news');

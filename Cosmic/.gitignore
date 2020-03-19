@@ -1,4 +1,6 @@
 App/Config.php
+public/tmp/*
+public/uploads/*
 
 # PHPStorm
 .idea
