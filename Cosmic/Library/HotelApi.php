@@ -14,8 +14,9 @@ class HotelApi
             return Json::encode(["status" => "error", "message" => "Socket API has been disabled"]);
         }
       
-        if(!fsockopen(Config::client['client_host'], Config::client['client_port'])) {
-            return Json::encode(["status" => "error", "message" => "Cannot execute this request when hotel the is offline!"]);
+        $fp = @fsockopen(Config::client['client_host'], Config::client['client_port'], $errno, $errstr, 0.1);
+        if(!$fp) {
+          return Json::encode(["status" => "error", "message" => "Cannot execute this request when hotel the is offline!"]);
         }
       
         if (!function_exists('socket_create')){

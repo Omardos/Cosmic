@@ -5,7 +5,6 @@ use App\Models\Admin;
 use App\Models\Ban;
 use App\Models\Log;
 use App\Models\Core;
-use App\Models\RememberedLogin;
 use App\Models\Permission;
 use App\Models\Player;
 
@@ -18,8 +17,8 @@ class Auth
 {
     public static function login(Player $player)
     {
-        self::banExists($player);
         session_regenerate_id(true);
+        self::banCheck($player);
 
         if (in_array('housekeeping', array_column(Permission::get($player->rank), 'permission'))) {
             Log::addStaffLog('-1', 'Staff logged in: ' . request()->getIp(), $player->id, 'LOGIN');
@@ -31,12 +30,19 @@ class Auth
         return $player;
     }
 
-    public static function banExists($player)
+    public static function banCheck($player)
     {
-        $ban = Ban::getBanByUserId($player->id, request()->getIp());
-        if($ban) {
+        $account = Ban::getBanByUserId($player->id, "account");
+        $ip_address = Ban::getBanByUserIp(request()->getIp(), ["ip,super"]);
+      
+        if($account || $ip_address) {
+            $ban = $account ?? $ip_address;
             response()->json(["status" => "error", "message" => Locale::get('core/notification/banned_1').' ' . $ban->ban_reason . '. '.Locale::get('core/notification/banned_2').' ' . \App\Core::timediff($ban->ban_expire, true)]);
         }
+    }
+  
+    public static function banMessage($ban)
+    {
     }
 
     public static function logout()

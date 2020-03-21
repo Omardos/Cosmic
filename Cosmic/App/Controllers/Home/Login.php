@@ -42,10 +42,9 @@ class Login
 
         $username     = input()->post('username')->value;
         $password     = input()->post('password')->value;
-      
         $pin_code     = !empty(input()->post('pincode')->value) ? input()->post('pincode')->value : false;
 
-        $player = Player::getDataByUsername($username, array('id', 'password', 'rank', 'secret_key', 'pincode'));
+        $player = Player::getDataByUsername($username, array('id', 'username', 'password', 'rank', 'secret_key', 'pincode'));
         if ($player == null || !Hash::verify($password, $player->password)) {
             response()->json(["status" => "error", "message" => Locale::get('login/invalid_password')]);
         }
