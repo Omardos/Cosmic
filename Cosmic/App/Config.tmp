@@ -96,7 +96,7 @@ class Config
     /* DONT CHANGE  */
   
     const apiEnabled = true;
-    const debug = true;
+    const debug = false;
     const view = 'App/View';
   
     const vpnLocation = '/../../../ASN.mmdb';

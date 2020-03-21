@@ -24,6 +24,12 @@ class Routes extends Router
          
             Router::setDefaultNamespace('\App\Controllers');
 
+          Router::error(function(Request $request, \Exception $exception) {
+
+    response()->redirect('/lost');
+    
+});
+          
             Router::get('/assets/js/web/user_settings.js', 'Home\Index@configuration');
           
             Router::partialGroup('/api/{callback}', function ($callback) {

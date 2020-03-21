@@ -21,13 +21,13 @@ class Home
             foreach($forums as $forum) {
                 $forum->slug = Core::convertSlug($forum->name);
             }
-        }
-      
-        $public = Guild::getPublicGuilds();
+          
+            $public = Guild::getPublicGuilds();
 
-        foreach($public as $guild) {
-            $guild->user = Guild::getGuilds($guild->id, request()->player->id);
-            $guild->slug = Core::convertSlug($guild->name);
+            foreach($public as $guild) {
+                $guild->user = Guild::getGuilds($guild->id, request()->player->id);
+                $guild->slug = Core::convertSlug($guild->name);
+            }
         }
       
         $latestPosts = Guild::latestForumPosts();
@@ -40,7 +40,7 @@ class Home
             'title'   => Locale::get('core/title/community/forum'),
             'page'    => 'forum',
             'forums'  => $forums ?? null,
-            'public'  => $public,
+            'public'  => $public ?? null,
             'latestposts' => $latestPosts
         ]);
     }
