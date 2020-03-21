@@ -16,16 +16,10 @@ use Library\Json;
 
 class Auth
 {
-    public static function login(Player $player, $remember_me = false)
+    public static function login(Player $player)
     {
         self::banExists($player);
         session_regenerate_id(true);
-
-        if ($remember_me) {
-            if ($player->rememberLogin()) {
-                setcookie('remember_me', $player->remember_token, $player->expiry_timestamp, '/');
-            }
-        }
 
         if (in_array('housekeeping', array_column(Permission::get($player->rank), 'permission'))) {
             Log::addStaffLog('-1', 'Staff logged in: ' . request()->getIp(), $player->id, 'LOGIN');
@@ -35,32 +29,6 @@ class Auth
         Player::update($player->id, ['ip_current' => request()->getIp(), 'last_online' => time()]);
 
         return $player;
-    }
-
-    public static function loginFromRememberCookie()
-    {
-        $cookie = $_COOKIE['remember_me'] ?? false;
-
-        if ($cookie) {
-            $remembered_login = RememberedLogin::findByToken($cookie);
-            if ($remembered_login && ! $remembered_login->hasExpired()) {
-                $user = $remembered_login->getPlayer();
-                return static::login($user, false);
-            }
-        }
-    }
-
-    protected static function forgetLogin()
-    {
-        $cookie = $_COOKIE['remember_me'] ?? false;
-
-        if ($cookie) {
-            $remembered_login = RememberedLogin::findByToken($cookie);
-            if ($remembered_login) {
-                $remembered_login->delete();
-            }
-            setcookie('remember_me', '', time() - 3600);
-        }
     }
 
     public static function banExists($player)
@@ -90,7 +58,6 @@ class Auth
         }
 
         session_destroy();
-        static::forgetLogin();
     }
 
     public static function maintenance()

@@ -42,7 +42,6 @@ class Login
 
         $username     = input()->post('username')->value;
         $password     = input()->post('password')->value;
-        $remember_me  = input()->post('remember_me')->value ?? false;
       
         $pin_code     = !empty(input()->post('pincode')->value) ? input()->post('pincode')->value : false;
 
@@ -79,12 +78,12 @@ class Login
         *  End authentication
         */
 
-        $this->login($player, $remember_me);
+        $this->login($player);
     }
 
-    protected function login(Player $user, $remember_me)
+    protected function login(Player $user)
     {
-        if ($user && Auth::login($user, $remember_me)) {
+        if ($user && Auth::login($user)) {
             response()->json(["status" => "error", "location" => "/home"]);
         } else {
             response()->json(["status" => "error", "message" => Locale::get('login/invalid_password')]);
