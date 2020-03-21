@@ -32,17 +32,13 @@ class Auth
 
     public static function banCheck($player)
     {
-        $account = Ban::getBanByUserId($player->id, "account");
-        $ip_address = Ban::getBanByUserIp(request()->getIp(), ["ip,super"]);
-      
+        $account = Ban::getBanByUserId($player->id);
+        $ip_address = Ban::getBanByUserIp(request()->getIp());
+
         if($account || $ip_address) {
             $ban = $account ?? $ip_address;
             response()->json(["status" => "error", "message" => Locale::get('core/notification/banned_1').' ' . $ban->ban_reason . '. '.Locale::get('core/notification/banned_2').' ' . \App\Core::timediff($ban->ban_expire, true)]);
         }
-    }
-  
-    public static function banMessage($ban)
-    {
     }
 
     public static function logout()

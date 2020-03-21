@@ -16,14 +16,14 @@ class Ban
         return QueryBuilder::table('bans')->where('timestamp', '<', time())->where('user_id', $user_id)->orWhere('ip', $ip_address)->first();
     }
 
-    public static function getBanByUserId($user_id, $type)
+    public static function getBanByUserId($user_id)
     {
-        return QueryBuilder::table('bans')->where('user_id', $user_id)->where('ban_expire', '>', time())->where("type", $type)->first();
+        return QueryBuilder::table('bans')->where('user_id', $user_id)->where('ban_expire', '>', time())->where("type", "account")->first();
     }
   
-    public static function getBanByUserIp($ip_address, $type)
+    public static function getBanByUserIp($ip_address)
     {
-        return QueryBuilder::table('bans')->where('ip', $ip_address)->where('ban_expire', '>', time())->where("type", $type)->first();
+        return QueryBuilder::table('bans')->where('ip', $ip_address)->where('ban_expire', '>', time())->where("type", "ip")->orWhere("type", "super")->first();
     }
 
     public static function insertBan($user_id, $ip_address, $staff_id, $expire, $reason, $type)
