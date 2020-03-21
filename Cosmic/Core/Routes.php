@@ -23,12 +23,6 @@ class Routes extends Router
         Router::PartialGroup('/', function () {
          
             Router::setDefaultNamespace('\App\Controllers');
-
-          Router::error(function(Request $request, \Exception $exception) {
-
-    response()->redirect('/lost');
-    
-});
           
             Router::get('/assets/js/web/user_settings.js', 'Home\Index@configuration');
           
@@ -188,6 +182,10 @@ class Routes extends Router
             });
         });
 
+        Router::error(function(Request $request, \Exception $exception) {
+          response()->redirect('/lost');
+        });
+      
         Router::start();
     }
 }
