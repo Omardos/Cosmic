@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers\Admin;
 
+use App\Core;
 use App\Models\Admin;
 use App\Models\Community;
 use App\Models\Player;
@@ -82,6 +83,11 @@ class Vacancies
     {
         $this->job = new \stdClass();
         $this->job->job = Community::getApplicationById(input()->post('id')->value);
+
+        foreach($this->job->job as $row) {
+            $row->message = Core::filterString($row->message);
+        }
+
         Json::encode($this->job);
     } 
   
@@ -96,6 +102,7 @@ class Vacancies
         $applications = Community::getAllApplications(input()->post('jobid')->value);
         foreach($applications as $application) {
             $application->user_id = Player::getDataById($application->user_id, 'username')->username;
+            $application->message = Core::filterString($application->message);
         }
       
         Json::filter($applications, 'desc', 'id');

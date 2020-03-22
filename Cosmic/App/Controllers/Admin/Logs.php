@@ -105,6 +105,7 @@ class Logs
 
         foreach ($staff_logs as $row) {
             $row->username = Player::getDataById($row->player_id, 'username')->username ?? null;
+            $row->value = Core::filterString($row->value);
             $row->timestamp = date("d-M-Y H:i:s", $row->timestamp);
 
             if (is_numeric($row->target)) {
