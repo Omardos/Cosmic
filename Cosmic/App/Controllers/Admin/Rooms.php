@@ -1,7 +1,7 @@
 <?php
 namespace App\Controllers\Admin;
 
-use App\Core;
+use App\Helper;
 use App\Models\Admin;
 use App\Models\Ban;
 use App\Models\Log;
@@ -83,8 +83,8 @@ class Rooms
         $rooms = Admin::getPopularRooms();
 
         foreach($rooms as $row) {
-            $row->name = Core::filterString($row->name);
-            $row->description = Core::filterString($row->description);
+            $row->name = Helper::filterString($row->name);
+            $row->description = Helper::filterString($row->description);
         }
 
         Json::filter($rooms, 'desc', 'id');

@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers\Admin;
 
+use App\Helper;
 use App\Models\Admin;
 use App\Models\Log;
 use App\Models\Player;
@@ -38,7 +39,7 @@ class Faq
         $category = input()->post('category')->value;
 
         if (empty($id)) {
-            Admin::addFAQ($title, $story, $category, request()->player->id);
+            Admin::addFAQ(Helper::convertSlug($title), $story, $category, request()->player->id);
             Log::addStaffLog('-1', 'FAQ added: ' . $title, request()->player->id, 'faq');
             response()->json(["status" => "success", "message" => "FAQ added successfully!"]);
         }
@@ -48,7 +49,7 @@ class Faq
             exit;
         }
 
-        if (Admin::editFAQ($id, $title, $story, $category, request()->player->id)) {
+        if (Admin::editFAQ($id, Helper::convertSlug($title), $story, $category, request()->player->id)) {
             Log::addStaffLog('-1', 'FAQ edit: ' . $id, request()->player->id, 'faq');
             response()->json(["status" => "success", "message" => "FAQ editted successfully!"]);
         }

@@ -1,7 +1,7 @@
 <?php
 namespace App\Controllers\Admin;
 
-use App\Core;
+use App\Helper;
 
 use App\Models\Community;
 use App\Models\Player;
@@ -35,8 +35,8 @@ class Feeds
                 $row->to_username = $to_user->username;
             }
 
-            $row->message = Core::filterString($row->message);
-            $row->timestamp = Core::timediff($row->timestamp);
+            $row->message = Helper::filterString($row->message);
+            $row->timestamp = Helper::timediff($row->timestamp);
         }
 
         Json::filter($feeds, 'desc', 'id');

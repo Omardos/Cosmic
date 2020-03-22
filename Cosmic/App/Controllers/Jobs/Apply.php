@@ -4,6 +4,7 @@ namespace App\Controllers\Jobs;
 use Core\Locale;
 use Core\View;
 
+use App\Helper;
 use App\Models\Community;
 use App\Models\Player;
 
@@ -61,7 +62,7 @@ class Apply
             response()->json(["status" => "error", "message" => Locale::get('core/notification/something_wrong')]);
         }
         
-        Community::addJobApply($job_id, $player_id, \App\Core::filterString($firstname), \App\Core::filterString($message), $available_monday, $available_tuesday, $available_wednesday, $available_thursday, $available_friday,$available_saturday, $available_sunday);
+        Community::addJobApply($job_id, $player_id, Helper::filterString($firstname), Helper::filterString($message), $available_monday, $available_tuesday, $available_wednesday, $available_thursday, $available_friday,$available_saturday, $available_sunday);
         response()->json(["status" => "success", "message" => Locale::get('website/apply/content_1'), "replacepage" => "jobs/my"]);    
     }
 }

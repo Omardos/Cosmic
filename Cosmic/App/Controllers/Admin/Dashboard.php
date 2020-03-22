@@ -1,10 +1,11 @@
 <?php
 namespace App\Controllers\Admin;
 
-use App\Core;
+use App\Helper;
 
 use App\Models\Permission;
 use App\Models\Admin;
+use App\Models\Core;
 
 use Core\View;
 
@@ -21,8 +22,8 @@ class Dashboard
 
         foreach ($latest_users as $row) {
             $row->last_login  = $row->online ? 'Online' : date("d-m-Y H:i:s", $row->last_login);
-            $row->ip_current  = Core::convertIp($row->ip_current);
-            $row->ip_register = Core::convertIp($row->ip_register);
+            $row->ip_current  = Helper::convertIp($row->ip_current);
+            $row->ip_register = Helper::convertIp($row->ip_register);
 
             if (!Permission::exists('housekeeping_change_email', request()->player->rank)) {
                 $row->mail = '';
@@ -42,7 +43,7 @@ class Dashboard
         $online_users = Admin::getOnlinePlayers();
 
         foreach ($online_users as $row) {
-            $row->ip = Core::convertIp($row->ip_register);
+            $row->ip = Helper::convertIp($row->ip_register);
         }
 
         Json::filter($online_users, 'desc', 'id');
@@ -54,7 +55,7 @@ class Dashboard
             response()->json(["status" => "error", "message" => "You have no permissions to do this!"]);
         }
       
-        $maintenance = Admin::saveSettings('maintenance', (\App\Models\Core::settings()->maintenance == "1") ? "0" : "1");
+        $maintenance = Admin::saveSettings('maintenance', (Core::settings()->maintenance == "1") ? "0" : "1");
         response()->json(["status" => "success", "message" => "Maintenance updated"]);
     }
 

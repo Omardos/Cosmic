@@ -2,7 +2,7 @@
 namespace App\Controllers\Admin;
 
 use App\Config;
-use App\Core;
+use App\Helper;
 use App\Flash;
 
 use App\Models\Ban;
@@ -45,15 +45,15 @@ class Remote
 
         $this->data->user               = (object)$this->user->username;
 
-        $this->data->user->ip_current   = Core::convertIp($this->user->ip_current);
-        $this->data->user->ip_register  = Core::convertIp($this->user->ip_register);
+        $this->data->user->ip_current   = Helper::convertIp($this->user->ip_current);
+        $this->data->user->ip_register  = Helper::convertIp($this->user->ip_register);
         $this->data->user->last_login   = $this->user->online ? 'Online' : date("d-m-Y H:i:s", $this->user->last_login);
 
         $this->data->user->id           = $this->user->id;
         $this->data->user->username     = $this->user->username;
         $this->data->user->rank_id      = $this->user->rank;
         $this->data->user->mail         = $this->user->mail;
-        $this->data->user->motto        = Core::filterString($this->user->motto);
+        $this->data->user->motto        = Helper::filterString($this->user->motto);
         $this->data->user->credits      = $this->user->credits;
       
         $this->data->user->currencys     = Player::getCurrencys($this->user->id);
@@ -243,7 +243,7 @@ class Remote
         $this->data->maillogs = Admin::getMailLogs($player_id);
       
         foreach ($this->data->maillogs as $row) {
-            $row->ip_address = Core::convertIp($row->ip_address);
+            $row->ip_address = Helper::convertIp($row->ip_address);
             $row->timestamp = date("d-m-Y H:i:s", $row->timestamp);
         }
     }
@@ -253,8 +253,8 @@ class Remote
         $this->data->rooms = Room::getByPlayerId($player_id);
 
         foreach($this->data->rooms as $room) {
-            $room->name = Core::filterString($room->name);
-            $room->description = Core::filterString($room->description);
+            $room->name = Helper::filterString($room->name);
+            $room->description = Helper::filterString($room->description);
         }
     }
 
@@ -282,7 +282,7 @@ class Remote
       
         foreach ($this->data->chatlogs as $logs) {
           
-            $logs->message = Core::filterString($logs->message);
+            $logs->message = Helper::filterString($logs->message);
             $logs->timestamp = date("d-m-Y H:i:s", $logs->timestamp);
           
             if($logs->user_to_id != 0) {
@@ -306,8 +306,8 @@ class Remote
         $this->data->duplicateUsers = Admin::getClones($userObject->ip_current, $userObject->ip_register);
       
         foreach ($this->data->duplicateUsers as $row) {
-            $row->iplast = Core::convertIp($row->ip_current);
-            $row->ipreg = Core::convertIp($row->ip_register);
+            $row->iplast = Helper::convertIp($row->ip_current);
+            $row->ipreg = Helper::convertIp($row->ip_register);
             $row->last_login = $row->online ? 'Online' : date("d-m-Y H:i:s", $row->last_login);
         }
     }
@@ -317,7 +317,7 @@ class Remote
         $this->data->messengerlogs = Admin::getMessengerLogs($player_id);
       
         foreach($this->data->messengerlogs as $row) {
-            $row->message   = Core::filterString($row->message);
+            $row->message   = Helper::filterString($row->message);
             $row->timestamp  = date("d-m-Y H:i:s", $row->timestamp);
         }
     }

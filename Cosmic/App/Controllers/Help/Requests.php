@@ -2,7 +2,7 @@
 namespace App\Controllers\Help;
 
 use App\Config;
-use App\Core;
+use App\Helper;
 
 use App\Models\Help;
 use App\Models\Player;
@@ -67,7 +67,7 @@ class Requests
             response()->json(["status" => "success", "message" => Locale::get('help/no_answer_yet')]);
         }
 
-        Help::addTicketReaction($ticket->id, request()->player->id, Core::filterString(input()->post('message')));
+        Help::addTicketReaction($ticket->id, request()->player->id, Helper::filterString(input()->post('message')));
         Help::updateTicketStatus($ticket->id, 'wait_reply');
 
         response()->json(["status" => "success", "message" => Locale::get('core/notification/message_placed'), "replacepage" => "help/requests/" . $ticket->id . "/view"]);
@@ -89,7 +89,7 @@ class Requests
         }
 
         $this->data->subject = input()->post('subject')->value;
-        $this->data->message = Core::filterString(input()->post('message')->value);
+        $this->data->message = Helper::filterString(input()->post('message')->value);
 
         Help::createTicket($this->data, request()->player->id, request()->getIp());
         response()->json(["status" => "success", "message" => Locale::get('help/ticket_created'), "replacepage" => "help/requests/view"]);

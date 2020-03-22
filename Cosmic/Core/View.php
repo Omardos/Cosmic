@@ -60,7 +60,6 @@ class View
           
             $twig->addExtension(new DebugExtension());
             $twig->addExtension(new DateExtension());
-            $twig->addExtension(new \Library\Bbcode\Parser(new \Library\Bbcode\Bbcode()));
 
             $twig->addGlobal('site', Config::site);
             $twig->addGlobal('publickey', \App\Models\Core::settings()->recaptcha_publickey ?? null);

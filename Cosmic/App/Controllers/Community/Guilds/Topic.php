@@ -1,9 +1,9 @@
 <?php
 namespace App\Controllers\Community\Guilds;
 
+use App\Helper;
 use App\Models\Guild;
 use App\Models\Player;
-use App\Core;
 
 use Core\Locale;
 use Core\View;
@@ -25,7 +25,7 @@ class Topic {
   
     public function index($group_id, $topic_id, $page = 1)
     {
-        $topic = Guild::getTopicById($this->slug($topic_id));
+        $topic = Guild::getTopicById(Helper::slug($topic_id));
         $guild = request()->guild;
       
         if($page == 1) {
@@ -40,18 +40,18 @@ class Topic {
         foreach($posts as $post) 
         {
             $post->author     = Player::getDataById($post->user_id, array('username', 'look', 'rank', 'account_created'));
-            $post->created_at = Core::timediff($post->created_at);
+            $post->created_at = Helper::timediff($post->created_at);
           
             $post->likes      = Guild::getPostLikes($post->id);
           
-            $post->content    = Core::FilterString($this->quote($post->message, $post->thread_id));
+            $post->content    = Helper::bbCode(Helper::quote($post->message, $post->thread_id));
           
             foreach($post->likes as $likes) {
                 $likes->user  = Player::getDataById($likes->user_id, array('username'));
             }
         }
 
-        $topic->slug = $this->slug(Core::filterCharacters($guild->name));
+        $topic->slug = Helper::slug(Helper::filterCharacters($guild->name));
         $topic->total = $totalPages;
         $topic->forum = $guild;
         $topic->posts = $posts;
@@ -99,8 +99,8 @@ class Topic {
             response()->json(["status" => "error", "message" => Locale::get('core/notification/topic_closed')]);
         }
 
-        $reply_id = Guild::createReply($topic_id, Core::FilterString(Core::tagByUser($message)), request()->player->id); 
-        response()->json(["status" => "success", "message" =>  Locale::get('core/notification/message_placed'), "replacepage" => "guilds/{$guild_id}/thread/{$topic->id}-" . Core::convertSlug($topic->subject) . "/page/{$totalPages}#{$reply_id}"]);
+        $reply_id = Guild::createReply($topic_id, Helper::FilterString(Helper::tagByUser($message)), request()->player->id); 
+        response()->json(["status" => "success", "message" =>  Locale::get('core/notification/message_placed'), "replacepage" => "guilds/{$guild_id}/thread/{$topic->id}-" . Helper::convertSlug($topic->subject) . "/page/{$totalPages}#{$reply_id}"]);
     }
   
     public function stickyclosethread()
@@ -126,7 +126,7 @@ class Topic {
         $guild_id = input()->post('guild_id')->value;
       
         $topic = Guild::getTopicById($post_id);
-        $topic->slug = Core::convertSlug($topic->subject);
+        $topic->slug = Helper::convertSlug($topic->subject);
 
         if(input()->post('action')->value == "sticky") {
             Guild::isSticky(input()->post('id')->value);
@@ -163,28 +163,4 @@ class Topic {
       
         response()->json(["status" => "success", "message" => Locale::get('core/notification/liked'), "replacepage" => input()->post('url')->value . "#{$topic->idp}"]);
     }
-  
-    private function slug($slug)
-    {
-        return explode('-', $slug)[0];
-    }
-  
-    private function quote($message, $topic_id)
-    {
-        preg_match_all('/#quote:(\w+)/', $message, $match);
-
-        foreach($match[1] as $match) {
-            $post   = Guild::getPostByTopidId($match, $topic_id);
-            if(!empty($post)) {
-                $quote  = "[quote=" .  Player::getDataById($post->user_id, array('username'))->username . "]" . $post->message . "[/quote]";
-                $message = str_replace("#quote:" . $match, $quote, $message);
-            }
-        }
-      
-        if (($pos = strpos($message, "#quote:")) !== FALSE) { 
-            return $this->quote($message, $topic_id);  
-        }
-        return $message;
-    }
-  
 }    

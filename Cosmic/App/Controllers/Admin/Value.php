@@ -2,7 +2,7 @@
 namespace App\Controllers\Admin;
 
 use App\Config;
-use App\Core;
+use App\Helper;
 use App\Models\Admin;
 use App\Models\Value as Values;
 
@@ -68,7 +68,7 @@ class Value
         $name = input()->post('name')->value;
         $hidden = input()->post('hidden')->value;
 
-        Admin::addValueCategory($cat_ids, $name, $hidden, Core::convertSlug($name));
+        Admin::addValueCategory($cat_ids, $name, $hidden, Helper::convertSlug($name));
         response()->json(["status" => "success", "message" => "Category: {$name} is succesfully added!"]);
     }
 

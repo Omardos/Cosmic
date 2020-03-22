@@ -2,7 +2,7 @@
 namespace App\Controllers\Admin;
 
 use App\Config;
-use App\Core;
+use App\Helper;
 
 use App\Models\Admin;
 use App\Models\Player;
@@ -33,22 +33,22 @@ class Help
         }
 
         $request->user = Player::getDataById($request->player_id, array('username','look','last_online'));
-        $request->last_online = Core::timediff($request->user->last_online);
-        $request->timestamp = Core::timediff($request->timestamp);
+        $request->last_online = Helper::timediff($request->user->last_online);
+        $request->timestamp = Helper::timediff($request->timestamp);
 
         $this->data->logs = Admin::getHelpTicketLogs($request->id);
       
         foreach ($this->data->logs as $row) {
             $row->assistant = Player::getDataById($row->player_id, 'username')->username;
-            $row->timestamp = Core::timediff($row->timestamp);
+            $row->timestamp = Helper::timediff($row->timestamp);
         }
 
         $this->data->reactions = Admin::getHelpTicketReactions($request->id);
       
         foreach ($this->data->reactions as $row) {
             $row->user = Player::getDataById($row->practitioner_id, array('username','look'));
-            $row->message = Core::filterString($row->message);
-            $row->timestamp = Core::timediff($row->timestamp);
+            $row->message = Helper::filterString($row->message);
+            $row->timestamp = Helper::timediff($row->timestamp);
         }
 
         $this->data->ticket = $request;
@@ -61,9 +61,9 @@ class Help
 
         foreach ($tickets as $ticket) {
           
-            $ticket->subject = Core::filterString($ticket->subject);
-            $ticket->message = Core::filterString($ticket->message);
-            $ticket->timestamp = Core::timediff($ticket->timestamp);
+            $ticket->subject = Helper::filterString($ticket->subject);
+            $ticket->message = Helper::filterString($ticket->message);
+            $ticket->timestamp = Helper::timediff($ticket->timestamp);
             $practitioner_id = Admin::getLatestChangeStatus($ticket->id);
 
             if (!empty($practitioner_id)) {
@@ -110,7 +110,7 @@ class Help
             exit;
         }
 
-        Admin::sendTicketMessage(Core::filterString($message), $ticket->id, request()->player->id);
+        Admin::sendTicketMessage(Helper::filterString($message), $ticket->id, request()->player->id);
         Log::addHelpTicketLog(request()->player->id, $ticket->id, 'SEND', 'message');
 
         if(Config::apiEnabled && request()->player->online) {

@@ -1,13 +1,12 @@
 <?php
 namespace App\Controllers\Community\Guilds;
 
+use App\Helper;
 use App\Models\Guild;
 use App\Models\Player;
 
-use App\Core;
-
 use Core\Locale;
-use Core\View;;
+use Core\View;
 
 use Library\Json;
 
@@ -19,20 +18,20 @@ class Home
             $forums = Guild::getCategory(request()->player->id);
         
             foreach($forums as $forum) {
-                $forum->slug = Core::convertSlug($forum->name);
+                $forum->slug = Helper::convertSlug($forum->name);
             }
           
             $public = Guild::getPublicGuilds();
 
             foreach($public as $guild) {
                 $guild->user = Guild::getGuilds($guild->id, request()->player->id);
-                $guild->slug = Core::convertSlug($guild->name);
+                $guild->slug = Helper::convertSlug($guild->name);
             }
         }
       
         $latestPosts = Guild::latestForumPosts();
         foreach($latestPosts as $latest) {
-            $latest->slug   = Core::convertSlug($latest->subject);
+            $latest->slug   = Helper::convertSlug($latest->subject);
             $latest->author = Player::getDataById($latest->user_id, array('username', 'look'));
         }
      

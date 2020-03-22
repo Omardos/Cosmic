@@ -1,7 +1,7 @@
 <?php
 namespace App\Controllers\Community;
 
-use App\Core;
+use App\Helper;
 
 use App\Controllers\Home\Profile;
 
@@ -54,7 +54,7 @@ class Feeds
             }
         }
 
-        Community::addFeedToUser(Core::filterString(Core::tagByUser($reply)), request()->player->id, $user_id);
+        Community::addFeedToUser(Helper::filterString(Helper::tagByUser($reply)), request()->player->id, $user_id);
         response()->json(["status" => "success", "message" => Locale::get('core/notification/message_placed'), "replacepage" => "profile/" . $player->username]);
 
         //$object->feedid = $feed_id;

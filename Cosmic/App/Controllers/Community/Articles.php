@@ -2,7 +2,7 @@
 namespace App\Controllers\Community;
 
 use App\Config;
-use App\Core;
+use App\Helper;
 
 use App\Models\Community;
 use App\Models\Permission;
@@ -71,7 +71,7 @@ class Articles
             response()->json(["status" => "error", "message" => Locale::get('core/notification/something_wrong')]);
         }
 
-        $message = Core::filterString(Core::tagByUser(input()->post('message')->value, $article->id));
+        $message = Helper::filterString(Helper::tagByUser(input()->post('message')->value, $article->id));
 
         $wordfilter = Admin::getWordFilters();
 

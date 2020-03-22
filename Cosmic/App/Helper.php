@@ -5,12 +5,13 @@ use App\Config;
 
 use App\Models\Permission;
 use App\Models\Player;
+use App\Models\Guild;
 
 use Jenssegers\Date\Date;
 
 use stdClass;
 
-class Core
+class Helper
 {
     public static function filterString($string)
     {
@@ -62,6 +63,71 @@ class Core
 
         return $type == null ? $date->ago() : $date->timespan();
     }
+  
+    public static function bbCode($string, $strip = true) 
+    {
+        if(is_array($strip)) {
+            $string = self::filterString($string);
+        }
+      
+        $filter   = array(
+            "/\[i\](.*?)\[\/i\]/is",
+            "/\[b\](.*?)\[\/b\]/is",
+            "/\[u\](.*?)\[\/u\]/is",
+            "/\[url=(.*?)\](.*?)\[\/url\]/is",
+            "/\[color=(.*?)\](.*?)\[\/color\]/is",
+            "/\[size=(.*?)\](.*?)\[\/size\]/is",
+            "/\[youtube\](.*?)\[\/youtube\]/is",
+            "/\[sup\](.*?)\[\/sup\]/is",
+            "/\[sub\](.*?)\[\/sub\]/is",
+            "/\[img\](.*?)\[\/img\]/is",
+            "/\[list\](.*?)\[\/list\]/is",
+            "/\[quote=(.*?)\](.*?)\[\/quote\]/is"
+        );
+      
+        $transform = array(
+            "<i>$1</i>",
+            "<b>$1</b>",
+            "<u>$1</u>",
+            "<a href=\"$1\" target=\"_blank\">$2</a>",
+            "<span style=\"color: $1\">$2</span>",
+            "<span style=\"font-size: $1\">$2</span>",
+            "<iframe class=\"youtube-player\" type=\"text/html\" width=\"640\"\ height=\"385\" src=\"https://www.youtube.com/embed/$1\" frameborder=\"0\"></iframe>",
+            "<sup>$1</sup>",
+            "<sub>$1</sub>",
+            "<img src=\"$1\">",
+            "<li></li>",
+            "<blockquote><span class=\"author\">$1</span><br/>$2</blockquote>"
+        );
+      
+        $string = preg_replace($filter, $transform, $string);
+        return self::stripScript($string);
+    }
+  
+    public static function stripScript($string) 
+    {
+        $string = str_replace('<script>',"&#60;script&#62;",$string);
+        return str_replace('</script>',"&#60;/script&#62;",$string);
+    }
+  
+    public static function quote($message, $topic_id)
+    {
+        preg_match_all('/#quote:(\w+)/', $message, $match);
+
+        foreach($match[1] as $match) {
+            $post   = Guild::getPostByTopidId($match, $topic_id);
+            if(!empty($post)) {
+                $quote  = "[quote=" .  Player::getDataById($post->user_id, array('username'))->username . "]" . $post->message . "[/quote]";
+                $message = str_replace("#quote:" . $match, $quote, $message);
+                $message = self::bbCode($message, $match);
+            }
+        }
+      
+        if (($pos = strpos($message, "#quote:")) !== FALSE) { 
+            return self::quote($message, $topic_id);  
+        }
+        return $message;
+    }
 
     public static function tagByUser($message)
     {
@@ -81,5 +147,8 @@ class Core
         return $message;
     }
 
-
+    public static function slug($slug)
+    {
+        return explode('-', $slug)[0];
+    }
 }
