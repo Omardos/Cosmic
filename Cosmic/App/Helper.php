@@ -89,7 +89,7 @@ class Helper
             "<i>$1</i>",
             "<b>$1</b>",
             "<u>$1</u>",
-            "<a href=\"$1\" target=\"_blank\">$2</a>",
+            "<a href=\"$1\">$2</a>",
             "<span style=\"color: $1\">$2</span>",
             "<span style=\"font-size: $1\">$2</span>",
             "<iframe class=\"youtube-player\" type=\"text/html\" width=\"640\"\ height=\"385\" src=\"https://www.youtube.com/embed/$1\" frameborder=\"0\"></iframe>",

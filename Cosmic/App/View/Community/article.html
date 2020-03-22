@@ -65,7 +65,7 @@
                             <a href="/profile/{{post.author.username}}">
                                 {{post.author.username}}
                             </a>
-                        </strong>: {{post.message}}
+                        </strong>: {{post.message|raw}}
 
                         {% if 'housekeeping_moderation_tools' in permissions %}
                         <div style="float: right">

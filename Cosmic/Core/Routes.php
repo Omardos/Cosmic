@@ -12,6 +12,7 @@ use App\Middleware\ValidateMiddleWare;
 use App\Middleware\PermissionMiddleware;
 use App\Middleware\GuildMiddleware;
 
+use Pecee\Http\Request;
 use Core\Handlers\ExceptionHandler;
 
 use Pecee\SimpleRouter\SimpleRouter as Router;
@@ -181,7 +182,11 @@ class Routes extends Router
                 return 'var Locale = ' . json_encode(Locale::get('housekeeping/javascript', true), true) . '';
             });
         });
-
+      
+        Router::error(function(Request $request, \Exception $exception) {
+            response()->redirect('/lost');
+        });
+      
         Router::start();
     }
 }
