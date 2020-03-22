@@ -182,10 +182,6 @@ class Routes extends Router
             });
         });
 
-        Router::error(function(Request $request, \Exception $exception) {
-          response()->redirect('/lost');
-        });
-      
         Router::start();
     }
 }

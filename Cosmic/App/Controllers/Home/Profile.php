@@ -2,7 +2,6 @@
 namespace App\Controllers\Home;
 
 use App\Config;
-use App\Core;
 
 use App\Models\Community;
 use App\Models\Player;
@@ -25,6 +24,7 @@ class Profile
 
     public function profile($username = null)
     {
+      
         if($username == null) {
             redirect('/');
             exit;
