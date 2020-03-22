@@ -251,13 +251,18 @@ class Remote
     protected function getRoomLogs($player_id)
     {
         $this->data->rooms = Room::getByPlayerId($player_id);
+
+        foreach($this->data->rooms as $room) {
+            $room->name = Core::filterString($room->name);
+            $room->description = Core::filterString($room->description);
+        }
     }
 
     protected function getTradeLogs($player_id)
     {
         $this->data->tradelogs = Admin::getTradeLogs($player_id);
+
         foreach($this->data->tradelogs as $item) {
-          
             $item->user_one_id = Player::getDataById($item->user_one_id, ['username']);
             $item->user_two_id = Player::getDataById($item->user_two_id, ['username']);
           
@@ -311,7 +316,8 @@ class Remote
     {
         $this->data->messengerlogs = Admin::getMessengerLogs($player_id);
       
-        foreach($this->data->messengerlogs as $row){
+        foreach($this->data->messengerlogs as $row) {
+            $row->message   = Core::filterString($row->message);
             $row->timestamp  = date("d-m-Y H:i:s", $row->timestamp);
         }
     }

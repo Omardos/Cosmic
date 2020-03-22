@@ -13,7 +13,6 @@ use Pecee\Http\Request;
 
 class AuthMiddleware implements IMiddleware
 {
-  
     public function handle(Request $request) : void
     {
         if(!Session::exists('player_id')) {
@@ -25,7 +24,7 @@ class AuthMiddleware implements IMiddleware
             return;
         }
 
-        if (Session::get('ip_address') != request()->getIp()) {
+        if (request()->getIp() != Session::get('ip_address') || $_SERVER['HTTP_USER_AGENT'] != Session::get('agent')) {
             Auth::logout();
         }
     }

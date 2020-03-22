@@ -24,7 +24,7 @@ class Auth
             Log::addStaffLog('-1', 'Staff logged in: ' . request()->getIp(), $player->id, 'LOGIN');
         }
 
-        Session::set(['player_id' => $player->id, 'ip_address' => request()->getIp()]);
+        Session::set(['player_id' => $player->id, 'ip_address' => request()->getIp(), 'agent' => $_SERVER['HTTP_USER_AGENT']]);
         Player::update($player->id, ['ip_current' => request()->getIp(), 'last_online' => time()]);
 
         return $player;

@@ -35,6 +35,7 @@ class Feeds
                 $row->to_username = $to_user->username;
             }
 
+            $row->message = Core::filterString($row->message);
             $row->timestamp = Core::timediff($row->timestamp);
         }
 

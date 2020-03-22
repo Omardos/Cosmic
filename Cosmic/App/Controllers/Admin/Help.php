@@ -47,7 +47,7 @@ class Help
       
         foreach ($this->data->reactions as $row) {
             $row->user = Player::getDataById($row->practitioner_id, array('username','look'));
-            $row->message = \App\Core::filterString($row->message);
+            $row->message = Core::filterString($row->message);
             $row->timestamp = Core::timediff($row->timestamp);
         }
 
@@ -62,6 +62,7 @@ class Help
         foreach ($tickets as $ticket) {
           
             $ticket->subject = Core::filterString($ticket->subject);
+            $ticket->message = Core::filterString($ticket->message);
             $ticket->timestamp = Core::timediff($ticket->timestamp);
             $practitioner_id = Admin::getLatestChangeStatus($ticket->id);
 
@@ -109,7 +110,7 @@ class Help
             exit;
         }
 
-        Admin::sendTicketMessage($message, $ticket->id, request()->player->id);
+        Admin::sendTicketMessage(Core::filterString($message), $ticket->id, request()->player->id);
         Log::addHelpTicketLog(request()->player->id, $ticket->id, 'SEND', 'message');
 
         if(Config::apiEnabled && request()->player->online) {
