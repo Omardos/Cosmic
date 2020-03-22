@@ -4,21 +4,7 @@ namespace App;
 use App\Models\Core;
 
 class Config
-{
-    /**
-     * Database settings
-     */
-  
-    const driver = 'mysql';
-    const host = 'localhost';
-    const username = 'root';
-    const password = '';
-    const database = 'cosmic';
-    const charset = 'utf8';
-    const collation = 'collation';
-    const prefix = '';
-
-    
+{    
    /**
      * Client settings
      */
@@ -37,7 +23,7 @@ class Config
       'external_base'               => 'gordon/PRODUCTION-201904011212-888653470/',
       'client_swf'                  => 'Habbo.swf',
       'client_radio'                => 'https://21253.live.streamtheworld.com/WEB16_AAC.aac',
-      'client_host'                 => 'CLIENT-IP',
+      'client_host'                 => '151.80.54.177',
       'client_port'                 => 3000
     );
   
@@ -96,7 +82,7 @@ class Config
     /* DONT CHANGE  */
   
     const apiEnabled = true;
-    const debug = false;
+    const debug = true;
     const view = 'App/View';
   
     const vpnLocation = '/../../../ASN.mmdb';
