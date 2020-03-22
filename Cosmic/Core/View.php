@@ -24,7 +24,7 @@ class View
     {
         extract($args, EXTR_SKIP);
 
-        $file = dirname(__DIR__) . '/'.Config::view.'/'.$view;
+        $file = dirname(__DIR__) . '/App/View/'.$view;
 
         if (is_readable($file)) {
             require $file;
@@ -53,7 +53,7 @@ class View
         static $twig = null;
         
         if ($twig === null) {
-            $loader = new FilesystemLoader(dirname(__DIR__) . '/' . Config::view);
+            $loader = new FilesystemLoader(dirname(__DIR__) . '/App/View');
             $twig = new Environment($loader, array(
                 'debug' => Config::debug
             ));
