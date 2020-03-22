@@ -1,7 +1,7 @@
 <?php
 namespace App\Controllers\Admin;
 
-use App\Core;
+use App\Helper;
 use App\Config;
 use App\Models\Admin;
 use App\Models\Log;
@@ -48,13 +48,13 @@ class Logs
             $logs->name       = 'MESSAGE';
             $logs->player     = $player->username;
             $logs->timestamp  = date("d-m-Y H:i:s", $logs->timestamp);
-            $logs->message    = Core::filterString($logs->message);
+            $logs->message    = Helper::filterString($logs->message);
           
             $this->username[$player->id] = $player->id;
           
             if($logs->user_to_id != 0) {
                 $logs->name     = 'WHISPER';
-                $logs->message  = Core::filterString('<b>' . Player::getDataById($logs->user_to_id, array('username'))->username . '</b>: ' . $logs->message);
+                $logs->message  = Helper::filterString('<b>' . Player::getDataById($logs->user_to_id, array('username'))->username . '</b>: ' . $logs->message);
             }
         }
 
@@ -88,11 +88,11 @@ class Logs
         foreach ($chat_logs as $logs) 
         {
             $logs->timestamp    = date("d-m-Y H:i:s", $logs->timestamp);
-            $logs->message      = Core::filterString($logs->message);
+            $logs->message      = Helper::filterString($logs->message);
             $logs->user_from_id = Player::getDataById($logs->user_from_id, array('username'))->username;
           
             if($logs->user_to_id != 0) {
-                $logs->message  = Core::filterString('<b>' . Player::getDataById($logs->user_to_id, array('username'))->username . '</b>: ' . $logs->message);
+                $logs->message  = Helper::filterString('<b>' . Player::getDataById($logs->user_to_id, array('username'))->username . '</b>: ' . $logs->message);
             }
         }
     
