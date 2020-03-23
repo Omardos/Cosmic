@@ -221,7 +221,7 @@ class Admin
     public static function addNews(String $title, String $short_story, String $full_story, $category, $header, $images, int $authorId)
     {
         $data = array(
-            'slug' => $title,
+            'slug' => \App\Helper::convertSlug($title),
             'title' => $title,
             'short_story' => $short_story,
             'full_story' => $full_story,
@@ -238,7 +238,7 @@ class Admin
     public static function editNews(int $id, String $title, String $short_story, String $full_story, $category, $header, $images, int $authorId)
     {
         $data = array(
-            'slug' => $title,
+            'slug' => \App\Helper::convertSlug($title),
             'title' => $title,
             'short_story' => $short_story,
             'full_story' => $full_story,

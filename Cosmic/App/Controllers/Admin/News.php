@@ -3,7 +3,7 @@ namespace App\Controllers\Admin;
 
 use App\Config;
 
-use App\Models\Helper;
+use App\Helper;
 use App\Models\Admin;
 use App\Models\Log;
 use App\Models\Player;
@@ -77,17 +77,19 @@ class News
                 $imagePath = '/uploads/' . $this->file->getInfo()->filename;
             }
         } else {
-            $imagePath = Admin::getNewsById($id)->header;
+            if ($id != 0) {
+                $imagePath = Admin::getNewsById($id)->header;
+            }
         }
       
         if ($id == 0) {
-            Admin::addNews(Helper::convertSlug($title), $short_story, $full_story, $category, $imagePath, $images, request()->player->id);
+            Admin::addNews($title, $short_story, $full_story, $category, $imagePath, $images, request()->player->id);
             Log::addStaffLog('-1', 'News placed: ' . $title, request()->player->id, 'news');
           
             response()->json(["status" => "success", "message" => "News article is posted!"]);
         }
 
-        Admin::editNews($id, Helper::convertSlug($title), $short_story, $full_story, $category, $imagePath, $images, request()->player->id);
+        Admin::editNews($id, $title, $short_story, $full_story, $category, $imagePath, $images, request()->player->id);
         Log::addStaffLog('-1', 'News edit: ' . $title, request()->player->id, 'news');
       
         response()->json(["status" => "success", "message" => "News edit successfully"]);
